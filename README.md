@@ -9,6 +9,7 @@ A clean, minimal implementation of an AI-driven agentic workflow using **LangGra
 - **Auto state saving**: Each node saves its state as a timestamped `.json` file
 - **Designed for interactive exploration** in Jupyter Notebooks
 - **Lightweight & modular**: Easy to extend or modify
+- **Python 3.11** via Pipenv and Dockerized setup
 
 ---
 
@@ -20,8 +21,10 @@ A clean, minimal implementation of an AI-driven agentic workflow using **LangGra
 ├── file.ipynb                    # Jupyter notebook for experimentation
 ├── graph.py                      # Defines LangGraph structure and node logic
 ├── langgraph.json                # Optional metadata/config for LangGraph
-├── requirements.txt              # Python dependencies
-├── state_reader.py               # Read and inspect saved state files
+├── Pipfile                       # Pipenv environment config (Python 3.11)
+├── Pipfile.lock                  # Locked dependency versions
+├── Dockerfile                    # Dockerized setup for consistent builds
+├── state_reader.py               # Utility for loading state snapshots
 └── workflow_states/              # Saved JSON states for each node
     └── mtg_workflow_<timestamp>/
         ├── 001_launch_browser_<timestamp>.json
@@ -33,57 +36,77 @@ A clean, minimal implementation of an AI-driven agentic workflow using **LangGra
 
 ## ⚙️ Setup
 
-1. **Install dependencies**:
+### 🐍 Local (Pipenv + Python 3.11)
+
+1. Install dependencies:
 
    ```bash
-   pip install -r requirements.txt
-   playwright install
+   pip install pipenv
+   pipenv install
+   pipenv run playwright install
    ```
 
-2. **Set required environment variables**:
+2. Set required environment variables:
 
-   Create a `.env` file or export these in your shell:
+   Create a `.env` file or export them:
 
-   ```env
-   OPENAI_API_KEY=sk-...
+   ```
+   OPENAI_API_KEY=...
    TAVILY_API_KEY=...
    LANGCHAIN_API_KEY=...
    LANGCHAIN_TRACING_V2=true
    ANTHROPIC_API_KEY=...
    ```
 
+3. Run:
+
+   ```bash
+   pipenv run python file.ipynb  # or run `langgraph dev` if using LangGraph CLI
+   ```
+
+---
+
+### 🐳 Docker
+
+1. Build the container:
+
+   ```bash
+   docker build -t mtg-form-filler .
+   ```
+
+2. Run the container:
+
+   ```bash
+   docker run --rm -it \
+     --env-file .env \
+     -v $(pwd):/app \
+     mtg-form-filler
+   ```
+
+Browsers are pre-installed via `playwright install --with-deps`.
+
 ---
 
 ## 🚀 Usage
 
-- Run `langgraph dev` to open UI interface for node execution. 
-- Each node in the graph executes a browser action (e.g., open page, navigate, analyze).
-- After each node, state is saved under `workflow_states/` as:
-
-  ```
-  001_launch_browser_<timestamp>.json
-  002_navigate_page_<timestamp>.json
-  ...
-  ```
-
-- Use `state_reader.py` to load and inspect saved states.
+- Each graph node performs a web automation step.
+- After each step, a timestamped JSON file is saved to `workflow_states/`.
+- Use `state_reader.py` to load and inspect intermediate state.
+- Run experiments and workflows in `file.ipynb` or using the LangGraph CLI.
 
 ---
 
-## 🧪 For Experimentation
+## 🧪 Experiment Freely
 
-This project is built to be used inside Jupyter for:
+Built for rapid prototyping in Jupyter:
 
-- Run the `file.ipynb` notebook to trigger the graph for experimentation
-- Debugging AI agent behavior
-- Capturing intermediate workflow states
-- Visualizing form-filling tasks or web scraping logic
+- Debug browser-based agent workflows
+- Capture state after every action
+- Visualize AI decision-making in web tasks
 
 ---
 
 ## 📜 License
 
 MIT License
-
----
 

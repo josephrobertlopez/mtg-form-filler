@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  mtg:
+    build: .
+    ports:
+      - "8888:8888"    # Jupyter Notebook
+      - "2024:2024"    # If you're using LangGraph or any local server
+    volumes:
+      - .:/app:Z # Mount local project into container
+    working_dir: /app
+    user: dev
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''

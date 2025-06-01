@@ -1,8 +1,0 @@
-# Core LangGraph
-langgraph>=0.2.0
-
-# Async file operations 
-aiofiles>=24.0.0
-
-# Browser automation
-playwright>=1.40.0
